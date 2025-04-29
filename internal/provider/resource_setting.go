@@ -454,9 +454,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		setting.OverrideWarnings = &overrideWarnings
 	}
 
-	// TODO: validate how do the read-only fields work
-	// e.g. one of write-only fields is inside of a read-only object
-
 	_, _, err = c.Setting.Update(ctx, setting)
 	if err != nil {
 		return diag.FromErr(err)
