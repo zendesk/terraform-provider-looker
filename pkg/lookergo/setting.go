@@ -23,12 +23,12 @@ type Setting struct {
 	ExtensionFrameworkEnabled           bool                       `json:"extension_framework_enabled,omitempty"`             // Toggle extension framework on or off
 	ExtensionLoadUrlEnabled             bool                       `json:"extension_load_url_enabled,omitempty"`              // (DEPRECATED) Toggle extension load url on or off. Do not use. This is temporary setting that will eventually become a noop and subsequently deleted
 	MarketplaceAutoInstallEnabled       bool                       `json:"marketplace_auto_install_enabled,omitempty"`        // (DEPRECATED) Toggle marketplace auto install on or off. Deprecated - do not use. Auto install can now be enabled via marketplace automation settings
-	MarketplaceAutomation               *MarketplaceAutomation     `json:"marketplace_automation,omitempty"`                  // Marketplace automation settings (read-only)
+	MarketplaceAutomation               *MarketplaceAutomation     `json:"marketplace_automation,omitempty"`                  // Marketplace automation settings
 	MarketplaceEnabled                  bool                       `json:"marketplace_enabled,omitempty"`                     // Toggle marketplace on or off
 	MarketplaceSite                     *string                    `json:"marketplace_site,omitempty"`                        // Location of Looker marketplace CDN (read-only)
 	MarketplaceTermsAccepted            bool                       `json:"marketplace_terms_accepted,omitempty"`              // Accept marketplace terms by setting this value to true, or get the current status. Marketplace terms CANNOT be declined once accepted. Accepting marketplace terms automatically enables the marketplace. The marketplace can still be disabled after it has been enabled
-	PrivatelabelConfiguration           *PrivatelabelConfiguration `json:"privatelabel_configuration,omitempty"`              // Private label configuration (read-only)
-	CustomWelcomeEmail                  *CustomWelcomeEmail        `json:"custom_welcome_email,omitempty"`                    // Custom welcome email configuration (read-only)
+	PrivatelabelConfiguration           *PrivatelabelConfiguration `json:"privatelabel_configuration,omitempty"`              // Private label configuration
+	CustomWelcomeEmail                  *CustomWelcomeEmail        `json:"custom_welcome_email,omitempty"`                    // Custom welcome email configuration
 	OnboardingEnabled                   bool                       `json:"onboarding_enabled,omitempty"`                      // Toggle onboarding on or off
 	Timezone                            string                     `json:"timezone,omitempty"`                                // Change instance-wide default timezone
 	AllowUserTimezones                  bool                       `json:"allow_user_timezones,omitempty"`                    // Toggle user-specific timezones on or off
@@ -130,12 +130,10 @@ func (s *Setting) ToMap() (map[string]any, error) {
 
 func (s *Setting) CleanFromReadOnly() {
 	s.InstanceConfig = nil
-	s.MarketplaceAutomation = nil
 	s.MarketplaceSite = nil
-	s.PrivatelabelConfiguration = nil
-	s.CustomWelcomeEmail = nil
+	s.PrivatelabelConfiguration.LogoUrl = nil
+	s.PrivatelabelConfiguration.FaviconUrl = nil
 	s.EmbedEnabled = nil
-	s.EmbedConfig = nil
 	s.LoginNotificationEnabled = nil
 	s.LoginNotificationText = nil
 }
