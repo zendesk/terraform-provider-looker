@@ -2,7 +2,7 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
+	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -399,13 +399,7 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m any) (di
 		return diag.FromErr(err)
 	}
 
-	settingItemsJson, err := json.Marshal(setting)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	var settingItems map[string]any
-	err = json.Unmarshal(settingItemsJson, &settingItems)
+	settingItems, err := setting.ToMap()
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -432,9 +426,29 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 
 	setting.CleanFromReadOnly()
 
-	// check ResourceData (d) for changes in relation to `setting`
-	// - check all fields from `setting` and compare them with `d`
-	// - check specifically for write-only fields in `d`
+	settingItems, err := setting.ToMap()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	// Checks all fields from `setting` and compare them with values in `d`
+	for key := range settingItems {
+		if d.HasChange(key) {
+			reflect.ValueOf(setting).
+				Elem().
+				FieldByName(key).
+				Set(reflect.ValueOf(d.Get(key)))
+		}
+	}
+
+	// Checks specifically for write-only fields in `d`
+	if d.HasChange("override_warnings") {
+		overrideWarnings := d.Get("override_warnings").(bool)
+		setting.OverrideWarnings = &overrideWarnings
+	}
+
+	// TODO: validate how do the read-only fields work
+	// e.g. one of write-only fields is inside of a read-only object
 
 	_, _, err = c.Setting.Update(ctx, setting)
 	if err != nil {

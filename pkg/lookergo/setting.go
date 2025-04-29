@@ -2,6 +2,7 @@ package lookergo
 
 import (
 	"context"
+	"encoding/json"
 )
 
 const SettingBasePath = "4.0/setting"
@@ -111,6 +112,21 @@ func (s *SettingResourceOp) Update(ctx context.Context, requestSetting *Setting)
 // 		"custom_welcome_email", "login_notification_enabled", "login_notification_text", "embed_config.embed_enabled",
 // 	}
 // }
+
+func (s *Setting) ToMap() (map[string]any, error) {
+	settingItemsJson, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+
+	var settingItems map[string]any
+	err = json.Unmarshal(settingItemsJson, &settingItems)
+	if err != nil {
+		return nil, err
+	}
+
+	return settingItems, nil
+}
 
 func (s *Setting) CleanFromReadOnly() {
 	s.InstanceConfig = nil
