@@ -52,6 +52,7 @@ func resourceSetting() *schema.Resource {
 			},
 			"marketplace_automation": {
 				Type:        schema.TypeSet,
+				Optional:    true,
 				Computed:    true,
 				Description: "Marketplace automation settings",
 				Elem: &schema.Resource{
@@ -97,6 +98,7 @@ func resourceSetting() *schema.Resource {
 			"privatelabel_configuration": {
 				Type:        schema.TypeSet,
 				Computed:    true,
+				Optional:    true,
 				Description: "Private label configuration",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -191,6 +193,7 @@ func resourceSetting() *schema.Resource {
 			},
 			"custom_welcome_email": {
 				Type:        schema.TypeSet,
+				Optional:    true,
 				Computed:    true,
 				Description: "Custom welcome email configuration",
 				Elem: &schema.Resource{
@@ -202,22 +205,25 @@ func resourceSetting() *schema.Resource {
 							Description: "If true, custom email content will replace the default body of welcome emails",
 						},
 						"content": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Computed:    true,
-							Description: "The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed",
+							Type:         schema.TypeString,
+							Optional:     true,
+							Computed:     true,
+							AtLeastOneOf: []string{"custom_welcome_email.0.enabled"},
+							Description:  "Requres custom_welcome_email to be enabled. The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed",
 						},
 						"subject": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Computed:    true,
-							Description: "The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
+							Type:         schema.TypeString,
+							Optional:     true,
+							Computed:     true,
+							AtLeastOneOf: []string{"custom_welcome_email.0.enabled"},
+							Description:  "Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
 						},
 						"header": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Computed:    true,
-							Description: "The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
+							Type:         schema.TypeString,
+							Optional:     true,
+							Computed:     true,
+							AtLeastOneOf: []string{"custom_welcome_email.0.enabled", "privatelabel_configuration.0.custom_welcome_email_advanced"},
+							Description:  "Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
 						},
 					},
 				},
@@ -312,10 +318,11 @@ func resourceSetting() *schema.Resource {
 							Description: "Is SSO embedding enabled for this Looker",
 						},
 						"embed_cookieless_v2": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Computed:    true,
-							Description: "Is Cookieless embedding enabled for this Looker",
+							Type:         schema.TypeBool,
+							Optional:     true,
+							Computed:     true,
+							RequiredWith: []string{"embed_config.0.embed_enabled"},
+							Description:  "Is Cookieless embedding enabled for this Looker",
 						},
 						"embed_content_navigation": {
 							Type:        schema.TypeBool,
