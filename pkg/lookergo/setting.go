@@ -36,7 +36,7 @@ type Setting struct {
 	OverrideWarnings                    *bool                      `json:"override_warnings,omitempty"`                       // (Write-Only) If warnings are preventing a host URL change, this parameter allows for overriding warnings to force update the setting. Does not directly change any Looker settings
 	EmailDomainAllowlist                []string                   `json:"email_domain_allowlist,omitempty"`                  //
 	EmbedCookielessV2                   bool                       `json:"embed_cookieless_v2,omitempty"`                     // (DEPRECATED) Use embed_config.embed_cookieless_v2 instead. If embed_config.embed_cookieless_v2 is specified, it overrides this value
-	EmbedEnabled                        bool                       `json:"embed_enabled,omitempty"`                           // True if embedding is enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed, false otherwise (read-only)
+	EmbedEnabled                        *bool                      `json:"embed_enabled,omitempty"`                           // True if embedding is enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed, false otherwise (read-only)
 	EmbedConfig                         *EmbedConfig               `json:"embed_config,omitempty"`                            // Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (read-only)
 	LoginNotificationEnabled            *bool                      `json:"login_notification_enabled,omitempty"`              // Toggle login notification on or off (read-only)
 	LoginNotificationText               *string                    `json:"login_notification_text,omitempty"`                 // Text to display in the login notification banner (read-only)
@@ -102,4 +102,24 @@ func (s *SettingResourceOp) Get(ctx context.Context) (*Setting, *Response, error
 
 func (s *SettingResourceOp) Update(ctx context.Context, requestSetting *Setting) (*Setting, *Response, error) {
 	return doUpdate(ctx, s.client, SettingBasePath, "", requestSetting, new(Setting))
+}
+
+// func (s *Setting) ReadOnlySettings() []string {
+// 	return []string{
+// 		"instance_config", "instance_config.feature_flags", "instance_config.license_features", "marketplace_automation",
+// 		"marketplace_site", "privatelabel_configuration", "privatelabel_configuration.logo_url", "privatelabel_configuration.favicon_url",
+// 		"custom_welcome_email", "login_notification_enabled", "login_notification_text", "embed_config.embed_enabled",
+// 	}
+// }
+
+func (s *Setting) CleanFromReadOnly() {
+	s.InstanceConfig = nil
+	s.MarketplaceAutomation = nil
+	s.MarketplaceSite = nil
+	s.PrivatelabelConfiguration = nil
+	s.CustomWelcomeEmail = nil
+	s.EmbedEnabled = nil
+	s.EmbedConfig = nil
+	s.LoginNotificationEnabled = nil
+	s.LoginNotificationText = nil
 }

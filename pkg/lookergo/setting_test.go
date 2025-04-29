@@ -321,7 +321,7 @@ func TestSettingResourceOp_Get(t *testing.T) {
 		HostUrl:                     "https://acme.cloud.looker.com",
 		EmailDomainAllowlist:        []string{},
 		EmbedCookielessV2:           true,
-		EmbedEnabled:                true,
+		EmbedEnabled:                boolPtr(true),
 		EmbedConfig: &EmbedConfig{
 			DomainAllowlist:          []string{"https://*.acme.com", "https://*.acme.com/"},
 			AlertUrlAllowlist:        []string{},
