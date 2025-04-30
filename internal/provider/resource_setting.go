@@ -206,11 +206,10 @@ func resourceSetting() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"enabled": {
-							Type:         schema.TypeBool,
-							Optional:     true,
-							Computed:     true,
-							RequiredWith: []string{"content", "subject", "header"},
-							Description:  "If true, custom email content will replace the default body of welcome emails",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							Description: "If true, custom email content will replace the default body of welcome emails",
 						},
 						"content": {
 							Type:        schema.TypeString,
