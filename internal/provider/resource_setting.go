@@ -289,6 +289,7 @@ func resourceSetting() *schema.Resource {
 			},
 			"embed_config": {
 				Type:        schema.TypeSet,
+				Optional:    true,
 				Computed:    true,
 				Description: "Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed",
 				Elem: &schema.Resource{
