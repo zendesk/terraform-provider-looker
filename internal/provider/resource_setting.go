@@ -334,7 +334,7 @@ func resourceSetting() *schema.Resource {
 							Type:         schema.TypeBool,
 							Optional:     true,
 							Computed:     true,
-							RequiredWith: []string{"embed_config.0.embed_enabled"},
+							RequiredWith: []string{"embed_enabled"},
 							Description:  "Is Cookieless embedding enabled for this Looker",
 						},
 						"embed_content_navigation": {
