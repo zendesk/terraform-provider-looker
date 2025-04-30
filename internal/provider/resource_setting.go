@@ -24,11 +24,17 @@ func resourceSetting() *schema.Resource {
 							Type:        schema.TypeMap,
 							Computed:    true,
 							Description: "Feature flags for the instance",
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 						"license_features": {
 							Type:        schema.TypeMap,
 							Computed:    true,
 							Description: "License features enabled on the instance",
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
@@ -294,11 +300,17 @@ func resourceSetting() *schema.Resource {
 							Type:     schema.TypeList,
 							Optional: true,
 							Computed: true,
+							Elem: schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 						"alert_url_allowlist": {
 							Type:     schema.TypeList,
 							Optional: true,
 							Computed: true,
+							Elem: schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 						"alert_url_param_owner": {
 							Type:        schema.TypeString,
