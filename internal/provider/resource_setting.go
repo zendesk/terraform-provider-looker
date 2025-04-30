@@ -12,6 +12,7 @@ func resourceSetting() *schema.Resource {
 	return &schema.Resource{
 		ReadContext:   resourceSettingRead,
 		UpdateContext: resourceSettingUpdate,
+		DeleteContext: resourceSettingDelete, // Setting is not deletable, but DeleteContext is required
 		Schema: map[string]*schema.Schema{
 			"instance_config": {
 				Type:        schema.TypeSet,
@@ -460,4 +461,9 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	}
 
 	return resourceSettingRead(ctx, d, m)
+}
+
+func resourceSettingDelete(ctx context.Context, d *schema.ResourceData, m any) (diags diag.Diagnostics) {
+	d.SetId("")
+	return diags
 }
