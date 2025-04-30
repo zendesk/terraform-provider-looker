@@ -300,7 +300,7 @@ func resourceSetting() *schema.Resource {
 							Type:     schema.TypeList,
 							Optional: true,
 							Computed: true,
-							Elem: schema.Schema{
+							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
@@ -308,7 +308,7 @@ func resourceSetting() *schema.Resource {
 							Type:     schema.TypeList,
 							Optional: true,
 							Computed: true,
-							Elem: schema.Schema{
+							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
