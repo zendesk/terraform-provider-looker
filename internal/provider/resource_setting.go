@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -449,12 +448,11 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	// Checks all fields from `setting` and compare them with values in `d`
 	for key := range settingItems {
 		if d.HasChange(key) {
-			reflect.ValueOf(setting).
-				Elem().
-				FieldByName(key).
-				Set(reflect.ValueOf(d.Get(key)))
+			settingItems[key] = d.Get(key)
 		}
 	}
+
+	setting.FromMap(settingItems)
 
 	// Checks specifically for write-only fields in `d`
 	if d.HasChange("override_warnings") {

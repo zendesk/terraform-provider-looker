@@ -120,6 +120,20 @@ func (s *Setting) ToMap() (map[string]any, error) {
 	return settingItems, nil
 }
 
+func (s *Setting) FromMap(settingItems map[string]any) error {
+	settingItemsJson, err := json.Marshal(settingItems)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(settingItemsJson, s)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *Setting) CleanFromReadOnly() {
 	s.InstanceConfig = nil
 	s.MarketplaceSite = nil
