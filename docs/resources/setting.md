@@ -19,6 +19,7 @@ description: |-
 - `dashboard_autorefresh_restriction` (Boolean) Toggle dashboard auto refresh restriction
 - `data_connector_default_enabled` (Boolean) Toggle default future connectors on or off
 - `email_domain_allowlist` (List of String) List of email domains that are allowed to be used for user creation
+- `embed_config` (Block Set) Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (see [below for nested schema](#nestedblock--embed_config))
 - `embed_cookieless_v2` (Boolean, Deprecated)
 - `extension_framework_enabled` (Boolean) Toggle extension framework on or off
 - `extension_load_url_enabled` (Boolean, Deprecated)
@@ -35,7 +36,6 @@ description: |-
 
 ### Read-Only
 
-- `embed_config` (Set of Object) Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (see [below for nested schema](#nestedatt--embed_config))
 - `embed_enabled` (Boolean) True if embedding is enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed, false otherwise
 - `id` (String) The ID of this resource.
 - `instance_config` (Set of Object) Externally available instance configuration information (see [below for nested schema](#nestedatt--instance_config))
@@ -52,6 +52,28 @@ Optional:
 - `enabled` (Boolean) If true, custom email content will replace the default body of welcome emails
 - `header` (String) Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
 - `subject` (String) Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
+
+
+<a id="nestedblock--embed_config"></a>
+### Nested Schema for `embed_config`
+
+Optional:
+
+- `alert_url_allowlist` (List of String)
+- `alert_url_label` (String) Label for the alert/schedule url
+- `alert_url_param_owner` (String) Owner of who defines the alert/schedule params on the base url
+- `domain_allowlist` (List of String)
+- `embed_content_management` (Boolean) Is embed content management enabled for this Looker
+- `embed_content_navigation` (Boolean) Is embed content navigation enabled for this looker
+- `embed_cookieless_v2` (Boolean) Is Cookieless embedding enabled for this Looker
+- `hide_look_navigation` (Boolean) When true, removes navigation to Looks from embedded dashboards and explores
+- `look_filters` (Boolean) When true, filters are enabled on embedded Looks
+- `sso_auth_enabled` (Boolean) Is SSO embedding enabled for this Looker
+- `strict_sameorigin_for_login` (Boolean) When true, prohibits the use of Looker login pages in non-Looker iframes. When false, Looker login pages may be used in non-Looker hosted iframes
+
+Read-Only:
+
+- `embed_enabled` (Boolean) True if embedding is licensed for this Looker instance
 
 
 <a id="nestedblock--marketplace_automation"></a>
@@ -87,25 +109,6 @@ Read-Only:
 
 - `favicon_url` (String) Favicon image url (read-only)
 - `logo_url` (String) Logo image url (read-only)
-
-
-<a id="nestedatt--embed_config"></a>
-### Nested Schema for `embed_config`
-
-Read-Only:
-
-- `alert_url_allowlist` (List of String)
-- `alert_url_label` (String)
-- `alert_url_param_owner` (String)
-- `domain_allowlist` (List of String)
-- `embed_content_management` (Boolean)
-- `embed_content_navigation` (Boolean)
-- `embed_cookieless_v2` (Boolean)
-- `embed_enabled` (Boolean)
-- `hide_look_navigation` (Boolean)
-- `look_filters` (Boolean)
-- `sso_auth_enabled` (Boolean)
-- `strict_sameorigin_for_login` (Boolean)
 
 
 <a id="nestedatt--instance_config"></a>
