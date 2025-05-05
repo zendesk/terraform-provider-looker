@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -412,6 +413,9 @@ func resourceSetting() *schema.Resource {
 
 func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m any) (diags diag.Diagnostics) {
 	c := m.(*Config).Api
+
+	d.SetId("looker_settings")
+
 	setting, _, err := c.Setting.Get(ctx)
 	if err != nil {
 		return diag.FromErr(err)
@@ -445,10 +449,53 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		return diag.FromErr(err)
 	}
 
+	tflog.Info(ctx, "Current Looker Setting", settingItems)
+
 	// Checks all fields from `setting` and compare them with values in `d`
 	for key := range settingItems {
 		if d.HasChange(key) {
+			tflog.Info(ctx, "Updating Looker Setting", map[string]any{"key": key, "value": d.Get(key)})
 			settingItems[key] = d.Get(key)
+		}
+	}
+
+	tflog.Info(ctx, "Changed Looker Setting", settingItems)
+
+	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok && privatelabelConfiguration != nil {
+		privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
+
+		if customWelcomeEmailAdvanced, ok := privatelabelConfiguration["custom_welcome_email_advanced"]; ok && customWelcomeEmailAdvanced != nil {
+			customWelcomeEmailAdvanced := customWelcomeEmailAdvanced.(bool)
+
+			if !customWelcomeEmailAdvanced {
+				// If custom_welcome_email_advanced is set to false, remove subject and header from the custom_welcome_email configuration
+
+				if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
+					customWelcomeEmail := customWelcomeEmail.(map[string]any)
+
+					tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
+
+					delete(customWelcomeEmail, "subject")
+					delete(customWelcomeEmail, "header")
+				}
+			}
+		}
+	}
+
+	if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
+		customWelcomeEmail := customWelcomeEmail.(map[string]any)
+
+		if enabled, ok := customWelcomeEmail["enabled"]; ok && enabled != nil {
+			enabled := enabled.(bool)
+
+			if !enabled {
+				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
+
+				delete(customWelcomeEmail, "content")
+				delete(customWelcomeEmail, "subject")
+				delete(customWelcomeEmail, "header")
+			}
+
 		}
 	}
 
