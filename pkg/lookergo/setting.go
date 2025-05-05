@@ -105,14 +105,6 @@ func (s *SettingResourceOp) Update(ctx context.Context, requestSetting *Setting)
 	return doUpdate(ctx, s.client, SettingBasePath, "", requestSetting, new(Setting))
 }
 
-// func (s *Setting) ReadOnlySettings() []string {
-// 	return []string{
-// 		"instance_config", "instance_config.feature_flags", "instance_config.license_features", "marketplace_automation",
-// 		"marketplace_site", "privatelabel_configuration", "privatelabel_configuration.logo_url", "privatelabel_configuration.favicon_url",
-// 		"custom_welcome_email", "login_notification_enabled", "login_notification_text", "embed_config.embed_enabled",
-// 	}
-// }
-
 func (s *Setting) ToMap() (map[string]any, error) {
 	settingItemsJson, err := json.Marshal(s)
 	if err != nil {

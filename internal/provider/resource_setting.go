@@ -10,6 +10,7 @@ import (
 
 func resourceSetting() *schema.Resource {
 	return &schema.Resource{
+		CreateContext: resourceSettingUpdate,
 		ReadContext:   resourceSettingRead,
 		UpdateContext: resourceSettingUpdate,
 		DeleteContext: resourceSettingDelete, // Setting is not deletable, but DeleteContext is required
@@ -419,10 +420,6 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m any) (di
 
 	settingItems, err := setting.ToMap()
 	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("data", settingItems); err != nil {
 		return diag.FromErr(err)
 	}
 
