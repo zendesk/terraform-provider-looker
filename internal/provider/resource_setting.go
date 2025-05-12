@@ -449,8 +449,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		return diag.FromErr(err)
 	}
 
-	tflog.Info(ctx, "Current Looker Setting", settingItems)
-
 	// Checks all fields from `setting` and compare them with values in `d`
 	for key := range settingItems {
 		if d.HasChange(key) {
@@ -458,10 +456,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 			settingItems[key] = d.Get(key)
 		}
 	}
-
-	tflog.Info(ctx, "Changed Looker Setting", settingItems)
-
-	// settingItems["custom_welcome_email"] = nil
 
 	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok && privatelabelConfiguration != nil {
 		privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
@@ -488,16 +482,15 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		customWelcomeEmail := customWelcomeEmail.(map[string]any)
 
 		if enabled, ok := customWelcomeEmail["enabled"]; ok && enabled != nil {
-			// enabled := enabled.(bool)
+			enabled := enabled.(bool)
 
-			// if !enabled {
-			tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
+			if !enabled {
+				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
-			customWelcomeEmail["content"] = ""
-			customWelcomeEmail["subject"] = ""
-			customWelcomeEmail["header"] = ""
-			// }
-
+				customWelcomeEmail["content"] = ""
+				customWelcomeEmail["subject"] = ""
+				customWelcomeEmail["header"] = ""
+			}
 		}
 	}
 
