@@ -48,10 +48,10 @@ description: |-
 
 Optional:
 
-- `content` (String) Requres custom_welcome_email to be enabled. The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed
+- `content` (String) Requires custom_welcome_email to be enabled. The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed
 - `enabled` (Boolean) If true, custom email content will replace the default body of welcome emails
-- `header` (String) Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
-- `subject` (String) Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
+- `header` (String) Requires custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
+- `subject` (String) Requires custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
 
 
 <a id="nestedblock--embed_config"></a>

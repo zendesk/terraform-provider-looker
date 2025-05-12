@@ -459,7 +459,9 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		}
 	}
 
-	tflog.Info(ctx, "Changed Looker Setting")
+	tflog.Info(ctx, "Changed Looker Setting", settingItems)
+
+	// settingItems["custom_welcome_email"] = nil
 
 	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok && privatelabelConfiguration != nil {
 		privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
