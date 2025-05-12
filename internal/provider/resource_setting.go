@@ -471,8 +471,8 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 
 					tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
 
-					customWelcomeEmail["subject"] = ""
-					customWelcomeEmail["header"] = ""
+					customWelcomeEmail["subject"] = nil
+					customWelcomeEmail["header"] = nil
 				}
 			}
 		}
@@ -487,9 +487,9 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 			if !enabled {
 				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
-				customWelcomeEmail["content"] = ""
-				customWelcomeEmail["subject"] = ""
-				customWelcomeEmail["header"] = ""
+				customWelcomeEmail["content"] = nil
+				customWelcomeEmail["subject"] = nil
+				customWelcomeEmail["header"] = nil
 			}
 		}
 	}
