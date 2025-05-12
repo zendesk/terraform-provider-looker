@@ -216,19 +216,19 @@ func resourceSetting() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Computed:    true,
-							Description: "Requres custom_welcome_email to be enabled. The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed",
+							Description: "Requires custom_welcome_email to be enabled. The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed",
 						},
 						"subject": {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Computed:    true,
-							Description: "Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
+							Description: "Requires custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
 						},
 						"header": {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Computed:    true,
-							Description: "Requres custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
+							Description: "Requires custom_welcome_email and privatelabel_configuration.custom_welcome_email_advanced to be enabled. The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled",
 						},
 					},
 				},
@@ -459,7 +459,7 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		}
 	}
 
-	tflog.Info(ctx, "Changed Looker Setting", settingItems)
+	tflog.Info(ctx, "Changed Looker Setting")
 
 	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok && privatelabelConfiguration != nil {
 		privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
@@ -475,8 +475,8 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 
 					tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
 
-					delete(customWelcomeEmail, "subject")
-					delete(customWelcomeEmail, "header")
+					customWelcomeEmail["subject"] = ""
+					customWelcomeEmail["header"] = ""
 				}
 			}
 		}
@@ -489,11 +489,11 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 			// enabled := enabled.(bool)
 
 			// if !enabled {
-			// 	tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
+			tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
-			delete(customWelcomeEmail, "content")
-			delete(customWelcomeEmail, "subject")
-			delete(customWelcomeEmail, "header")
+			customWelcomeEmail["content"] = ""
+			customWelcomeEmail["subject"] = ""
+			customWelcomeEmail["header"] = ""
 			// }
 
 		}
