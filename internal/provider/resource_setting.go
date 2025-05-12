@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -457,23 +458,33 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		}
 	}
 
-	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok && privatelabelConfiguration != nil {
-		privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
+	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok {
+		shouldClean := false
 
-		if customWelcomeEmailAdvanced, ok := privatelabelConfiguration["custom_welcome_email_advanced"]; ok && customWelcomeEmailAdvanced != nil {
-			customWelcomeEmailAdvanced := customWelcomeEmailAdvanced.(bool)
+		if privatelabelConfiguration == nil {
+			shouldClean = true
+		} else {
+			privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
 
-			if !customWelcomeEmailAdvanced {
-				// If custom_welcome_email_advanced is set to false, remove subject and header from the custom_welcome_email configuration
+			if customWelcomeEmailAdvanced, ok := privatelabelConfiguration["custom_welcome_email_advanced"]; ok {
+				customWelcomeEmailAdvanced := customWelcomeEmailAdvanced.(*bool)
 
-				if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
-					customWelcomeEmail := customWelcomeEmail.(map[string]any)
+				if customWelcomeEmailAdvanced == nil || !*customWelcomeEmailAdvanced {
+					// If custom_welcome_email_advanced is falsy, remove subject and header from the custom_welcome_email configuration
 
-					tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
-
-					customWelcomeEmail["subject"] = nil
-					customWelcomeEmail["header"] = nil
+					shouldClean = true
 				}
+			}
+		}
+
+		if shouldClean {
+			if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
+				customWelcomeEmail := customWelcomeEmail.(map[string]any)
+
+				tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
+
+				customWelcomeEmail["subject"] = nil
+				customWelcomeEmail["header"] = nil
 			}
 		}
 	}
@@ -481,10 +492,10 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
 		customWelcomeEmail := customWelcomeEmail.(map[string]any)
 
-		if enabled, ok := customWelcomeEmail["enabled"]; ok && enabled != nil {
-			enabled := enabled.(bool)
+		if enabled, ok := customWelcomeEmail["enabled"]; ok {
+			enabled := enabled.(*bool)
 
-			if !enabled {
+			if enabled == nil || !*enabled {
 				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
 				customWelcomeEmail["content"] = nil
@@ -495,6 +506,12 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	}
 
 	setting.FromMap(settingItems)
+
+	newSettingJson, err := json.MarshalIndent(setting, "", "  ")
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	tflog.Info(ctx, "New Looker Setting JSON", map[string]any{"json": string(newSettingJson)})
 
 	// Checks specifically for write-only fields in `d`
 	if d.HasChange("override_warnings") {
