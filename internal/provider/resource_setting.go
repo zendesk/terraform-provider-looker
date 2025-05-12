@@ -467,9 +467,7 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 			privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
 
 			if customWelcomeEmailAdvanced, ok := privatelabelConfiguration["custom_welcome_email_advanced"]; ok {
-				customWelcomeEmailAdvanced := customWelcomeEmailAdvanced.(*bool)
-
-				if customWelcomeEmailAdvanced == nil || !*customWelcomeEmailAdvanced {
+				if customWelcomeEmailAdvanced == nil || !customWelcomeEmailAdvanced.(bool) {
 					// If custom_welcome_email_advanced is falsy, remove subject and header from the custom_welcome_email configuration
 
 					shouldClean = true
@@ -493,9 +491,7 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		customWelcomeEmail := customWelcomeEmail.(map[string]any)
 
 		if enabled, ok := customWelcomeEmail["enabled"]; ok {
-			enabled := enabled.(*bool)
-
-			if enabled == nil || !*enabled {
+			if enabled == nil || !enabled.(bool) {
 				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
 				customWelcomeEmail["content"] = nil
