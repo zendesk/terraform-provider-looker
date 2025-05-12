@@ -486,15 +486,15 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		customWelcomeEmail := customWelcomeEmail.(map[string]any)
 
 		if enabled, ok := customWelcomeEmail["enabled"]; ok && enabled != nil {
-			enabled := enabled.(bool)
+			// enabled := enabled.(bool)
 
-			if !enabled {
-				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
+			// if !enabled {
+			// 	tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
 
-				delete(customWelcomeEmail, "content")
-				delete(customWelcomeEmail, "subject")
-				delete(customWelcomeEmail, "header")
-			}
+			delete(customWelcomeEmail, "content")
+			delete(customWelcomeEmail, "subject")
+			delete(customWelcomeEmail, "header")
+			// }
 
 		}
 	}
