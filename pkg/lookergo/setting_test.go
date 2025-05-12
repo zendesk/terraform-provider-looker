@@ -341,7 +341,7 @@ func TestSettingResourceOp_Get(t *testing.T) {
 		ManagedCertificateUri:               nil,
 	}
 
-	if !reflect.DeepEqual(result, expected) {
+	if !reflect.DeepEqual(expected, result) {
 		t.Error(errGotWant("Projects.Get", result, expected))
 	}
 }
