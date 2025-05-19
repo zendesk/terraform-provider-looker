@@ -502,6 +502,12 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		}
 	}
 
+	settingItemsJson, err := json.MarshalIndent(settingItems, "", "  ")
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return diag.FromErr(fmt.Errorf("Setting JSON: %s", string(settingItemsJson)))
+
 	setting.FromMap(settingItems)
 
 	newSettingJson, err := json.MarshalIndent(setting, "", "  ")
@@ -509,7 +515,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		return diag.FromErr(err)
 	}
 	tflog.Info(ctx, "New Looker Setting JSON", map[string]any{"json": string(newSettingJson)})
-	return diag.FromErr(fmt.Errorf("Setting JSON: %s", string(newSettingJson)))
 
 	// Checks specifically for write-only fields in `d`
 	if d.HasChange("override_warnings") {
