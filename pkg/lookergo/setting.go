@@ -3,6 +3,7 @@ package lookergo
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 )
 
 const SettingBasePath = "4.0/setting"
@@ -121,7 +122,12 @@ func (s *Setting) ToMap() (map[string]any, error) {
 }
 
 func (s *Setting) FromMap(settingItems map[string]any) error {
-	settingItemsJson, err := json.Marshal(settingItems)
+	oldSettingItemsJson, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	settingItemsJson, err := json.MarshalIndent(settingItems, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -132,6 +138,12 @@ func (s *Setting) FromMap(settingItems map[string]any) error {
 	if err != nil {
 		return err
 	}
+
+	return fmt.Errorf(
+		"replacing OLD JSON: %s\nwith NEW JSON: %s",
+		oldSettingItemsJson,
+		string(settingItemsJson),
+	)
 
 	*s = newSetting
 

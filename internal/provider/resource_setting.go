@@ -502,12 +502,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 		}
 	}
 
-	settingItemsJson, err := json.MarshalIndent(settingItems, "", "  ")
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	return diag.FromErr(fmt.Errorf("Setting JSON: %s", string(settingItemsJson)))
-
 	setting.FromMap(settingItems)
 
 	newSettingJson, err := json.MarshalIndent(setting, "", "  ")
