@@ -2,8 +2,8 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -422,18 +422,223 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m any) (di
 		return diag.FromErr(err)
 	}
 
-	settingItems, err := setting.ToMap()
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	for key, val := range settingItems {
-		if err := d.Set(key, val); err != nil {
-			return diag.FromErr(err)
+	readBoolSetting := func(key string, value *bool) {
+		if value != nil {
+			d.Set(key, *value)
 		}
 	}
 
+	readStringSetting := func(key string, value *string) {
+		if value != nil {
+			d.Set(key, *value)
+		}
+	}
+
+	readBoolSetting("extension_framework_enabled", setting.ExtensionFrameworkEnabled)
+	readBoolSetting("extension_load_url_enabled", setting.ExtensionLoadUrlEnabled)
+	readBoolSetting("marketplace_auto_install_enabled", setting.MarketplaceAutoInstallEnabled)
+	readBoolSetting("marketplace_enabled", setting.MarketplaceEnabled)
+	readStringSetting("marketplace_site", setting.MarketplaceSite)
+	readBoolSetting("marketplace_terms_accepted", setting.MarketplaceTermsAccepted)
+	readBoolSetting("onboarding_enabled", setting.OnboardingEnabled)
+	readStringSetting("timezone", setting.Timezone)
+	readBoolSetting("allow_user_timezones", setting.AllowUserTimezones)
+	readBoolSetting("data_connector_default_enabled", setting.DataConnectorDefaultEnabled)
+	readStringSetting("host_url", setting.HostUrl)
+	readBoolSetting("override_warnings", setting.OverrideWarnings)
+	readBoolSetting("embed_cookieless_v2", setting.EmbedCookielessV2)
+	readBoolSetting("embed_enabled", setting.EmbedEnabled)
+	readBoolSetting("login_notification_enabled", setting.LoginNotificationEnabled)
+	readStringSetting("login_notification_text", setting.LoginNotificationText)
+	readBoolSetting("dashboard_autorefresh_restriction", setting.DashboardAutorefreshRestriction)
+	readStringSetting("dashboard_auto_refresh_minimum_interval", setting.DashboardAutoRefreshMinimumInterval)
+
+	// Lists
+	d.Set("email_domain_allowlist", setting.EmailDomainAllowlist)
+	d.Set("managed_certificate_uri", setting.ManagedCertificateUri)
+
+	readInstanceConfig(d, setting)
+	readMarketplaceAutomation(d, setting)
+	readPrivatelabelConfiguration(d, setting)
+	readCustomWelcomeEmail(d, setting)
+	readEmbedConfig(d, setting)
+
 	return diags
+}
+
+func readInstanceConfig(d *schema.ResourceData, setting *lookergo.Setting) {
+	if setting.InstanceConfig != nil {
+		instanceConfigMap := []map[string]any{{}}
+		if setting.InstanceConfig.FeatureFlags != nil {
+			instanceConfigMap[0]["feature_flags"] = *setting.InstanceConfig.FeatureFlags
+		}
+		if setting.InstanceConfig.LicenseFeatures != nil {
+			instanceConfigMap[0]["license_features"] = *setting.InstanceConfig.LicenseFeatures
+		}
+		d.Set("instance_config", instanceConfigMap)
+	}
+}
+
+func readMarketplaceAutomation(d *schema.ResourceData, setting *lookergo.Setting) {
+	if setting.MarketplaceAutomation != nil {
+		marketplaceAutomationMap := []map[string]any{{
+			"install_enabled":            false,
+			"update_looker_enabled":      false,
+			"update_third_party_enabled": false,
+		}}
+
+		if setting.MarketplaceAutomation.InstallEnabled != nil {
+			marketplaceAutomationMap[0]["install_enabled"] = *setting.MarketplaceAutomation.InstallEnabled
+		}
+		if setting.MarketplaceAutomation.UpdateLookerEnabled != nil {
+			marketplaceAutomationMap[0]["update_looker_enabled"] = *setting.MarketplaceAutomation.UpdateLookerEnabled
+		}
+		if setting.MarketplaceAutomation.UpdateThirdPartyEnabled != nil {
+			marketplaceAutomationMap[0]["update_third_party_enabled"] = *setting.MarketplaceAutomation.UpdateThirdPartyEnabled
+		}
+
+		d.Set("marketplace_automation", marketplaceAutomationMap)
+	}
+}
+
+func readPrivatelabelConfiguration(d *schema.ResourceData, setting *lookergo.Setting) {
+	if setting.PrivatelabelConfiguration != nil {
+		plc := setting.PrivatelabelConfiguration
+		plcMap := map[string]any{
+			"logo_file":                     "",
+			"favicon_file":                  "",
+			"default_title":                 "",
+			"show_help_menu":                false,
+			"show_docs":                     false,
+			"show_email_sub_options":        false,
+			"allow_looker_mentions":         false,
+			"allow_looker_links":            false,
+			"custom_welcome_email_advanced": false,
+			"setup_mentions":                false,
+			"alerts_logo":                   false,
+			"alerts_links":                  false,
+			"folders_mentions":              false,
+		}
+
+		// Set computed values
+		if plc.LogoUrl != nil {
+			plcMap["logo_url"] = *plc.LogoUrl
+		}
+		if plc.FaviconUrl != nil {
+			plcMap["favicon_url"] = *plc.FaviconUrl
+		}
+
+		// Set configurable values
+		if plc.DefaultTitle != nil {
+			plcMap["default_title"] = *plc.DefaultTitle
+		}
+		if plc.ShowHelpMenu != nil {
+			plcMap["show_help_menu"] = *plc.ShowHelpMenu
+		}
+		if plc.ShowDocs != nil {
+			plcMap["show_docs"] = *plc.ShowDocs
+		}
+		if plc.ShowEmailSubOptions != nil {
+			plcMap["show_email_sub_options"] = *plc.ShowEmailSubOptions
+		}
+		if plc.AllowLookerMentions != nil {
+			plcMap["allow_looker_mentions"] = *plc.AllowLookerMentions
+		}
+		if plc.AllowLookerLinks != nil {
+			plcMap["allow_looker_links"] = *plc.AllowLookerLinks
+		}
+		if plc.CustomWelcomeEmailAdvanced != nil {
+			plcMap["custom_welcome_email_advanced"] = *plc.CustomWelcomeEmailAdvanced
+		}
+		if plc.SetupMentions != nil {
+			plcMap["setup_mentions"] = *plc.SetupMentions
+		}
+		if plc.AlertsLogo != nil {
+			plcMap["alerts_logo"] = *plc.AlertsLogo
+		}
+		if plc.AlertsLinks != nil {
+			plcMap["alerts_links"] = *plc.AlertsLinks
+		}
+		if plc.FoldersMentions != nil {
+			plcMap["folders_mentions"] = *plc.FoldersMentions
+		}
+
+		d.Set("privatelabel_configuration", []map[string]any{plcMap})
+	}
+}
+
+func readCustomWelcomeEmail(d *schema.ResourceData, setting *lookergo.Setting) {
+	if setting.CustomWelcomeEmail != nil {
+		cwe := setting.CustomWelcomeEmail
+		cweMap := map[string]any{
+			"enabled": false,
+			"content": "",
+			"subject": "",
+			"header":  "",
+		}
+
+		if cwe.Enabled != nil {
+			cweMap["enabled"] = *cwe.Enabled
+		}
+		if cwe.Content != nil {
+			cweMap["content"] = *cwe.Content
+		}
+		if cwe.Subject != nil {
+			cweMap["subject"] = *cwe.Subject
+		}
+		if cwe.Header != nil {
+			cweMap["header"] = *cwe.Header
+		}
+
+		d.Set("custom_welcome_email", []map[string]any{cweMap})
+	}
+}
+
+func readEmbedConfig(d *schema.ResourceData, setting *lookergo.Setting) {
+	if setting.EmbedConfig != nil {
+		ec := setting.EmbedConfig
+		ecMap := map[string]any{
+			"domain_allowlist":            ec.DomainAllowlist,
+			"alert_url_allowlist":         ec.AlertUrlAllowlist,
+			"alert_url_param_owner":       ec.AlertUrlParamOwner,
+			"alert_url_label":             ec.AlertUrlLabel,
+			"sso_auth_enabled":            false,
+			"embed_cookieless_v2":         false,
+			"embed_content_navigation":    false,
+			"embed_content_management":    false,
+			"strict_sameorigin_for_login": false,
+			"look_filters":                false,
+			"hide_look_navigation":        false,
+			"embed_enabled":               false,
+		}
+
+		if ec.SsoAuthEnabled != nil {
+			ecMap["sso_auth_enabled"] = *ec.SsoAuthEnabled
+		}
+		if ec.EmbedCookielessV2 != nil {
+			ecMap["embed_cookieless_v2"] = *ec.EmbedCookielessV2
+		}
+		if ec.EmbedContentNavigation != nil {
+			ecMap["embed_content_navigation"] = *ec.EmbedContentNavigation
+		}
+		if ec.EmbedContentManagement != nil {
+			ecMap["embed_content_management"] = *ec.EmbedContentManagement
+		}
+		if ec.StrictSameoriginForLogin != nil {
+			ecMap["strict_sameorigin_for_login"] = *ec.StrictSameoriginForLogin
+		}
+		if ec.LookFilters != nil {
+			ecMap["look_filters"] = *ec.LookFilters
+		}
+		if ec.HideLookNavigation != nil {
+			ecMap["hide_look_navigation"] = *ec.HideLookNavigation
+		}
+		if ec.EmbedEnabled != nil {
+			ecMap["embed_enabled"] = *ec.EmbedEnabled
+		}
+
+		d.Set("embed_config", []map[string]any{ecMap})
+	}
 }
 
 func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (diags diag.Diagnostics) {
@@ -445,78 +650,56 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 
 	setting.CleanFromReadOnly()
 
-	settingItems, err := setting.ToMap()
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Checks all fields from `setting` and compare them with values in `d`
-	for key := range settingItems {
+	updateBoolSetting := func(key string, target **bool) {
 		if d.HasChange(key) {
-			tflog.Info(ctx, "Updating Looker Setting", map[string]any{"key": key, "value": d.Get(key)})
-			settingItems[key] = d.Get(key)
+			val := d.Get(key).(bool)
+			*target = &val
 		}
 	}
 
-	if privatelabelConfiguration, ok := settingItems["privatelabel_configuration"]; ok {
-		shouldClean := false
+	updateStringSetting := func(key string, target **string) {
+		if d.HasChange(key) {
+			val := d.Get(key).(string)
+			*target = &val
+		}
+	}
 
-		if privatelabelConfiguration == nil {
-			shouldClean = true
-		} else {
-			privatelabelConfiguration := privatelabelConfiguration.(map[string]any)
-
-			if customWelcomeEmailAdvanced, ok := privatelabelConfiguration["custom_welcome_email_advanced"]; ok {
-				if customWelcomeEmailAdvanced == nil || !customWelcomeEmailAdvanced.(bool) {
-					// If custom_welcome_email_advanced is falsy, remove subject and header from the custom_welcome_email configuration
-
-					shouldClean = true
-				}
+	updateStringList := func(key string, target *[]string) {
+		if d.HasChange(key) {
+			values := d.Get(key).([]any)
+			result := make([]string, len(values))
+			for i, v := range values {
+				result[i] = v.(string)
 			}
-		}
-
-		if shouldClean {
-			if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
-				customWelcomeEmail := customWelcomeEmail.(map[string]any)
-
-				tflog.Info(ctx, "Removing custom_welcome_email subject and header - privatelabel_configuration.custom_welcome_email_advanced is false")
-
-				customWelcomeEmail["subject"] = nil
-				customWelcomeEmail["header"] = nil
-			}
+			*target = result
 		}
 	}
 
-	if customWelcomeEmail, ok := settingItems["custom_welcome_email"]; ok && customWelcomeEmail != nil {
-		customWelcomeEmail := customWelcomeEmail.(map[string]any)
+	updateBoolSetting("extension_framework_enabled", &setting.ExtensionFrameworkEnabled)
+	updateBoolSetting("extension_load_url_enabled", &setting.ExtensionLoadUrlEnabled)
+	updateBoolSetting("marketplace_auto_install_enabled", &setting.MarketplaceAutoInstallEnabled)
+	updateBoolSetting("marketplace_enabled", &setting.MarketplaceEnabled)
+	updateBoolSetting("marketplace_terms_accepted", &setting.MarketplaceTermsAccepted)
+	updateBoolSetting("onboarding_enabled", &setting.OnboardingEnabled)
+	updateBoolSetting("allow_user_timezones", &setting.AllowUserTimezones)
+	updateBoolSetting("data_connector_default_enabled", &setting.DataConnectorDefaultEnabled)
+	updateBoolSetting("override_warnings", &setting.OverrideWarnings)
+	updateBoolSetting("embed_cookieless_v2", &setting.EmbedCookielessV2)
+	updateBoolSetting("dashboard_autorefresh_restriction", &setting.DashboardAutorefreshRestriction)
 
-		if enabled, ok := customWelcomeEmail["enabled"]; ok {
-			if enabled == nil || !enabled.(bool) {
-				tflog.Info(ctx, "Removing custom_welcome_email content, subject and header - custom_welcome_email.enabled is false")
+	updateStringSetting("timezone", &setting.Timezone)
+	updateStringSetting("host_url", &setting.HostUrl)
+	updateStringSetting("dashboard_auto_refresh_minimum_interval", &setting.DashboardAutoRefreshMinimumInterval)
 
-				customWelcomeEmail["content"] = nil
-				customWelcomeEmail["subject"] = nil
-				customWelcomeEmail["header"] = nil
-			}
-		}
-	}
+	updateStringList("email_domain_allowlist", &setting.EmailDomainAllowlist)
+	updateStringList("managed_certificate_uri", &setting.ManagedCertificateUri)
 
-	err = setting.FromMap(settingItems)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	updateMarketplaceAutomation(d, setting)
+	updatePrivatelabelConfiguration(d, setting)
+	updateCustomWelcomeEmail(d, setting)
+	updateEmbedConfig(d, setting)
 
-	newSettingJson, err := json.MarshalIndent(setting, "", "  ")
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	tflog.Info(ctx, "New Looker Setting JSON", map[string]any{"json": string(newSettingJson)})
-
-	// Checks specifically for write-only fields in `d`
-	if d.HasChange("override_warnings") {
-		overrideWarnings := d.Get("override_warnings").(bool)
-		setting.OverrideWarnings = &overrideWarnings
-	}
+	handleCustomWelcomeEmail(ctx, setting)
 
 	_, _, err = c.Setting.Update(ctx, setting)
 	if err != nil {
@@ -524,6 +707,147 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	}
 
 	return resourceSettingRead(ctx, d, m)
+}
+
+func updateMarketplaceAutomation(d *schema.ResourceData, setting *lookergo.Setting) {
+	if d.HasChange("marketplace_automation") {
+		set := d.Get("marketplace_automation").(*schema.Set)
+		if len(set.List()) > 0 {
+			data := set.List()[0].(map[string]any)
+
+			installEnabled := data["install_enabled"].(bool)
+			updateLookerEnabled := data["update_looker_enabled"].(bool)
+			updateThirdPartyEnabled := data["update_third_party_enabled"].(bool)
+
+			setting.MarketplaceAutomation = &lookergo.MarketplaceAutomation{
+				InstallEnabled:          &installEnabled,
+				UpdateLookerEnabled:     &updateLookerEnabled,
+				UpdateThirdPartyEnabled: &updateThirdPartyEnabled,
+			}
+		}
+	}
+}
+
+func updatePrivatelabelConfiguration(d *schema.ResourceData, setting *lookergo.Setting) {
+	if d.HasChange("privatelabel_configuration") {
+		privatelabelConfigurationSet := d.Get("privatelabel_configuration").(*schema.Set)
+		privatelabelConfiguration := privatelabelConfigurationSet.List()[0].(map[string]any)
+
+		logoFile := privatelabelConfiguration["logo_file"].(string)
+		faviconFile := privatelabelConfiguration["favicon_file"].(string)
+		defaultTitle := privatelabelConfiguration["default_title"].(string)
+		showHelpMenu := privatelabelConfiguration["show_help_menu"].(bool)
+		showDocs := privatelabelConfiguration["show_docs"].(bool)
+		showEmailSubOptions := privatelabelConfiguration["show_email_sub_options"].(bool)
+		allowLookerMentions := privatelabelConfiguration["allow_looker_mentions"].(bool)
+		allowLookerLinks := privatelabelConfiguration["allow_looker_links"].(bool)
+		customWelcomeEmailAdvanced := privatelabelConfiguration["custom_welcome_email_advanced"].(bool)
+		setupMentions := privatelabelConfiguration["setup_mentions"].(bool)
+		alertsLogo := privatelabelConfiguration["alerts_logo"].(bool)
+		alertsLinks := privatelabelConfiguration["alerts_links"].(bool)
+		foldersMentions := privatelabelConfiguration["folders_mentions"].(bool)
+
+		setting.PrivatelabelConfiguration = &lookergo.PrivatelabelConfiguration{
+			LogoFile:                   &logoFile,
+			FaviconFile:                &faviconFile,
+			DefaultTitle:               &defaultTitle,
+			ShowHelpMenu:               &showHelpMenu,
+			ShowDocs:                   &showDocs,
+			ShowEmailSubOptions:        &showEmailSubOptions,
+			AllowLookerMentions:        &allowLookerMentions,
+			AllowLookerLinks:           &allowLookerLinks,
+			CustomWelcomeEmailAdvanced: &customWelcomeEmailAdvanced,
+			SetupMentions:              &setupMentions,
+			AlertsLogo:                 &alertsLogo,
+			AlertsLinks:                &alertsLinks,
+			FoldersMentions:            &foldersMentions,
+		}
+	}
+}
+
+func updateCustomWelcomeEmail(d *schema.ResourceData, setting *lookergo.Setting) {
+	if d.HasChange("custom_welcome_email") {
+		customWelcomeEmailSet := d.Get("custom_welcome_email").(*schema.Set)
+		customWelcomeEmail := customWelcomeEmailSet.List()[0].(map[string]any)
+
+		customWelcomeEmailEnabled := customWelcomeEmail["enabled"].(bool)
+		customWelcomeEmailContent := customWelcomeEmail["content"].(string)
+		customWelcomeEmailSubject := customWelcomeEmail["subject"].(string)
+		customWelcomeEmailHeader := customWelcomeEmail["header"].(string)
+
+		setting.CustomWelcomeEmail = &lookergo.CustomWelcomeEmail{
+			Enabled: &customWelcomeEmailEnabled,
+			Content: &customWelcomeEmailContent,
+			Subject: &customWelcomeEmailSubject,
+			Header:  &customWelcomeEmailHeader,
+		}
+	}
+}
+
+func updateEmbedConfig(d *schema.ResourceData, setting *lookergo.Setting) {
+	if d.HasChange("embed_config") {
+		embedConfigSet := d.Get("embed_config").(*schema.Set)
+		embedConfig := embedConfigSet.List()[0].(map[string]any)
+
+		domainAllowlist := embedConfig["domain_allowlist"].([]any)
+		alertUrlAllowlist := embedConfig["alert_url_allowlist"].([]any)
+		alertUrlParamOwner := embedConfig["alert_url_param_owner"].(string)
+		alertUrlLabel := embedConfig["alert_url_label"].(string)
+		ssoAuthEnabled := embedConfig["sso_auth_enabled"].(bool)
+		embedCookielessV2 := embedConfig["embed_cookieless_v2"].(bool)
+		embedContentNavigation := embedConfig["embed_content_navigation"].(bool)
+		embedContentManagement := embedConfig["embed_content_management"].(bool)
+		strictSameoriginForLogin := embedConfig["strict_sameorigin_for_login"].(bool)
+		lookFilters := embedConfig["look_filters"].(bool)
+		hideLookNavigation := embedConfig["hide_look_navigation"].(bool)
+		embedEnabled := embedConfig["embed_enabled"].(bool)
+
+		domainAllowlistString := make([]string, len(domainAllowlist))
+		for i, v := range domainAllowlist {
+			domainAllowlistString[i] = v.(string)
+		}
+
+		alertUrlAllowlistString := make([]string, len(alertUrlAllowlist))
+		for i, v := range alertUrlAllowlist {
+			alertUrlAllowlistString[i] = v.(string)
+		}
+
+		setting.EmbedConfig = &lookergo.EmbedConfig{
+			DomainAllowlist:          domainAllowlistString,
+			AlertUrlAllowlist:        alertUrlAllowlistString,
+			AlertUrlParamOwner:       alertUrlParamOwner,
+			AlertUrlLabel:            alertUrlLabel,
+			SsoAuthEnabled:           &ssoAuthEnabled,
+			EmbedCookielessV2:        &embedCookielessV2,
+			EmbedContentNavigation:   &embedContentNavigation,
+			EmbedContentManagement:   &embedContentManagement,
+			StrictSameoriginForLogin: &strictSameoriginForLogin,
+			LookFilters:              &lookFilters,
+			HideLookNavigation:       &hideLookNavigation,
+			EmbedEnabled:             &embedEnabled,
+		}
+	}
+}
+
+func handleCustomWelcomeEmail(ctx context.Context, setting *lookergo.Setting) {
+	if setting.PrivatelabelConfiguration != nil &&
+		setting.PrivatelabelConfiguration.CustomWelcomeEmailAdvanced != nil &&
+		!*setting.PrivatelabelConfiguration.CustomWelcomeEmailAdvanced {
+
+		tflog.Info(ctx, "Custom welcome email advanced is disabled, setting subject and header to nil")
+		setting.CustomWelcomeEmail.Subject = nil
+		setting.CustomWelcomeEmail.Header = nil
+	}
+
+	if setting.CustomWelcomeEmail != nil &&
+		setting.CustomWelcomeEmail.Enabled != nil &&
+		!*setting.CustomWelcomeEmail.Enabled {
+
+		tflog.Info(ctx, "Custom welcome email is disabled, setting content, subject and header to nil")
+		setting.CustomWelcomeEmail.Content = nil
+		setting.CustomWelcomeEmail.Subject = nil
+		setting.CustomWelcomeEmail.Header = nil
+	}
 }
 
 func resourceSettingDelete(ctx context.Context, d *schema.ResourceData, m any) (diags diag.Diagnostics) {

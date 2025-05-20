@@ -2,8 +2,6 @@ package lookergo
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 )
 
 const SettingBasePath = "4.0/setting"
@@ -77,10 +75,10 @@ type PrivatelabelConfiguration struct {
 }
 
 type CustomWelcomeEmail struct {
-	Enabled bool   `json:"enabled"`           // If true, custom email content will replace the default body of welcome emails
-	Content string `json:"content,omitempty"` // The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed
-	Subject string `json:"subject,omitempty"` // The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
-	Header  string `json:"header,omitempty"`  // The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
+	Enabled *bool   `json:"enabled"`           // If true, custom email content will replace the default body of welcome emails
+	Content *string `json:"content,omitempty"` // The HTML to use as custom content for welcome emails. Script elements and other potentially dangerous markup will be removed
+	Subject *string `json:"subject,omitempty"` // The text to appear in the email subject line. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
+	Header  *string `json:"header,omitempty"`  // The text to appear in the header line of the email body. Only available with a whitelabel license and whitelabel_configuration.advanced_custom_welcome_email enabled
 }
 
 type EmbedConfig struct {
@@ -104,50 +102,6 @@ func (s *SettingResourceOp) Get(ctx context.Context) (*Setting, *Response, error
 
 func (s *SettingResourceOp) Update(ctx context.Context, requestSetting *Setting) (*Setting, *Response, error) {
 	return doUpdate(ctx, s.client, SettingBasePath, "", requestSetting, new(Setting))
-}
-
-func (s *Setting) ToMap() (map[string]any, error) {
-	settingItemsJson, err := json.Marshal(s)
-	if err != nil {
-		return nil, err
-	}
-
-	var settingItems map[string]any
-	err = json.Unmarshal(settingItemsJson, &settingItems)
-	if err != nil {
-		return nil, err
-	}
-
-	return settingItems, nil
-}
-
-func (s *Setting) FromMap(settingItems map[string]any) error {
-	oldSettingItemsJson, err := json.MarshalIndent(s, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	settingItemsJson, err := json.MarshalIndent(settingItems, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	newSetting := Setting{}
-
-	err = json.Unmarshal(settingItemsJson, &newSetting)
-	if err != nil {
-		return err
-	}
-
-	return fmt.Errorf(
-		"replacing OLD JSON: %s\nwith NEW JSON: %s",
-		oldSettingItemsJson,
-		string(settingItemsJson),
-	)
-
-	*s = newSetting
-
-	return nil
 }
 
 func (s *Setting) CleanFromReadOnly() {
