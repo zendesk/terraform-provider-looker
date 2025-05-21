@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -331,11 +332,10 @@ func resourceSetting() *schema.Resource {
 							Description: "Is SSO embedding enabled for this Looker",
 						},
 						"embed_cookieless_v2": {
-							Type:         schema.TypeBool,
-							Optional:     true,
-							Computed:     true,
-							RequiredWith: []string{"embed_enabled"},
-							Description:  "Is Cookieless embedding enabled for this Looker",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							Description: "Is Cookieless embedding enabled for this Looker",
 						},
 						"embed_content_navigation": {
 							Type:        schema.TypeBool,
@@ -700,6 +700,11 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m any) (
 	updateEmbedConfig(d, setting)
 
 	handleCustomWelcomeEmail(ctx, setting)
+
+	if setting.EmbedConfig.EmbedCookielessV2 != nil && setting.EmbedConfig.EmbedEnabled != nil &&
+		*setting.EmbedConfig.EmbedCookielessV2 && !*setting.EmbedConfig.EmbedEnabled {
+		return diag.FromErr(fmt.Errorf("embed_cookieless_v2 cannot be set to true when embed_enabled is false"))
+	}
 
 	_, _, err = c.Setting.Update(ctx, setting)
 	if err != nil {
