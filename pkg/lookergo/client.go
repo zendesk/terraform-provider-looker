@@ -83,6 +83,7 @@ type Client struct {
 	EgressIpAddresses PublicEgressIpsResource
 	Themes            ThemesResource
 	Setting           SettingResource
+	ApiCredentials    ApiCredentialsResource
 	// TODO: Expand
 
 	// Optional function called after every successful request made to the DO APIs
@@ -160,6 +161,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.EgressIpAddresses = &PublicEgressIpsResourceOp{client: c}
 	c.Themes = &ThemesResourceOp{client: c}
 	c.Setting = &SettingResourceOp{client: c}
+	c.ApiCredentials = &ApiCredentialsResourceOp{client: c}
 	c.headers = make(map[string]string)
 	c.Workspace = "production"
 

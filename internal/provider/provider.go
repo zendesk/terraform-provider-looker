@@ -89,6 +89,7 @@ func New(version string) func() *schema.Provider {
 				"looker_user_attribute_member":  resourceUserAttributeMember(),
 				"looker_theme":                  resourceTheme(),
 				"looker_setting":                resourceSetting(),
+				"looker_api_credentials":         resourceApiCredentials(),
 			},
 		}
 
