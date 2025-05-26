@@ -12,12 +12,13 @@ func resourceApiCredentials() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceApiCredentialsCreate,
 		ReadContext:   resourceApiCredentialsRead,
-		DeleteContext: resourceApiCredentialsDelete, // Assuming credentials can be deleted; if not, handle accordingly
+		UpdateContext: resourceApiCredentialsCreate,
+		DeleteContext: resourceApiCredentialsDelete,
 		Schema: map[string]*schema.Schema{
 			"user_id": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				ForceNew:    true, // User ID usually immutable for the credential
+				ForceNew:    true,
 				Description: "ID of the user owning the API credential",
 			},
 			"type": {
@@ -109,8 +110,16 @@ func resourceApiCredentialsRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceApiCredentialsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	// If deleting is supported by your API, implement it here.
-	// If not, you can just remove the resource from state:
-	d.SetId("")
-	return nil
+    c := m.(*Config).Api
+
+    userID := d.Get("user_id").(int)
+    credID := d.Id()
+
+    _, err := c.ApiCredentials.Delete(ctx, userID, credID)
+    if err != nil {
+        return diag.FromErr(fmt.Errorf("deleting API credential: %w", err))
+    }
+
+    d.SetId("")
+    return nil
 }

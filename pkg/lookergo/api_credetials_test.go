@@ -90,3 +90,30 @@ func TestApiCredentialsResourceOp_Create(t *testing.T) {
 		t.Errorf("ApiCredentials.Create returned\n got: %+v\nwant: %+v", cred, expected)
 	}
 }
+
+func TestApiCredentialsResourceOp_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+
+	userID := 18
+	credentialsID := "9"
+
+	mux.HandleFunc(fmt.Sprintf("/4.0/users/%d/credentials_api3/%s", userID, credentialsID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodDelete)
+		// Return 204 No Content
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	resp, err := client.ApiCredentials.Delete(context.Background(), userID, credentialsID)
+	if err != nil {
+		t.Fatalf("ApiCredentials.Delete returned error: %v", err)
+	}
+
+	if resp == nil {
+		t.Fatalf("ApiCredentials.Delete response is nil")
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("ApiCredentials.Delete returned status %d, want %d", resp.StatusCode, http.StatusNoContent)
+	}
+}

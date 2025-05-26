@@ -19,6 +19,7 @@ type ApiCredential struct {
 type ApiCredentialsResource interface {
 	Get(ctx context.Context, userID int, credentialsID string) (*ApiCredential, *Response, error)
 	Create(ctx context.Context, userID int, newCredential *ApiCredential) (*ApiCredential, *Response, error)
+	Delete(ctx context.Context, userID int, credentialsID string) (*Response, error)
 }
 
 type ApiCredentialsResourceOp struct {
@@ -37,4 +38,9 @@ func (s *ApiCredentialsResourceOp) Get(ctx context.Context, userID int, credenti
 func (s *ApiCredentialsResourceOp) Create(ctx context.Context, userID int, newCredential *ApiCredential) (*ApiCredential, *Response, error) {
 	path := fmt.Sprintf("%s/%d/credentials_api3", apiCredentialsBasePath, userID)
 	return doCreate(ctx, s.client, path, newCredential, new(ApiCredential))
+}
+
+// Delete deletes an API credential for a user
+func (s *ApiCredentialsResourceOp) Delete(ctx context.Context, userID int, credentialsID string) (*Response, error) {
+	return doDelete(ctx, s.client, apiCredentialsBasePath, userID, "credentials_api3", credentialsID)
 }
