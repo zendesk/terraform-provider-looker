@@ -858,3 +858,7 @@ func boolPtr(b bool) *bool {
 func stringPtr(s string) *string {
 	return &s
 }
+
+func castToPtr[T any](v T) *T {
+	return &v
+}

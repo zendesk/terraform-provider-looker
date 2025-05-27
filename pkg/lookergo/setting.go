@@ -34,7 +34,7 @@ type Setting struct {
 	DataConnectorDefaultEnabled         *bool                      `json:"data_connector_default_enabled,omitempty"`          // Toggle default future connectors on or off
 	HostUrl                             *string                    `json:"host_url,omitempty"`                                // Change the base portion of your Looker instance URL setting
 	OverrideWarnings                    *bool                      `json:"override_warnings,omitempty"`                       // (Write-Only) If warnings are preventing a host URL change, this parameter allows for overriding warnings to force update the setting. Does not directly change any Looker settings
-	EmailDomainAllowlist                []string                   `json:"email_domain_allowlist"`                            //
+	EmailDomainAllowlist                *[]string                  `json:"email_domain_allowlist,omitempty"`                  //
 	EmbedCookielessV2                   *bool                      `json:"embed_cookieless_v2,omitempty"`                     // (DEPRECATED) Use embed_config.embed_cookieless_v2 instead. If embed_config.embed_cookieless_v2 is specified, it overrides this value
 	EmbedEnabled                        *bool                      `json:"embed_enabled,omitempty"`                           // True if embedding is enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed, false otherwise (read-only)
 	EmbedConfig                         *EmbedConfig               `json:"embed_config,omitempty"`                            // Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (read-only)
@@ -42,12 +42,12 @@ type Setting struct {
 	LoginNotificationText               *string                    `json:"login_notification_text,omitempty"`                 // Text to display in the login notification banner (read-only)
 	DashboardAutorefreshRestriction     *bool                      `json:"dashboard_auto_refresh_restriction,omitempty"`      // Toggle Dashboard Auto Refresh restriction
 	DashboardAutoRefreshMinimumInterval *string                    `json:"dashboard_auto_refresh_minimum_interval,omitempty"` // Minimum time interval for dashboard element automatic refresh. Examples: (30 seconds, 1 minute)
-	ManagedCertificateUri               []string                   `json:"managed_certificate_uri"`
+	ManagedCertificateUri               *[]string                  `json:"managed_certificate_uri,omitempty"`                 //
 }
 
 type InstanceConfig struct {
-	FeatureFlags    *map[string]any `json:"feature_flags,omitempty"`    // Feature flags for the instance (read-only)
-	LicenseFeatures *map[string]any `json:"license_features,omitempty"` // License features enabled on the instance (read-only)
+	FeatureFlags    *map[string]bool `json:"feature_flags,omitempty"`    // Feature flags for the instance (read-only)
+	LicenseFeatures *map[string]bool `json:"license_features,omitempty"` // License features enabled on the instance (read-only)
 }
 
 type MarketplaceAutomation struct {
@@ -82,18 +82,18 @@ type CustomWelcomeEmail struct {
 }
 
 type EmbedConfig struct {
-	DomainAllowlist          []string `json:"domain_allowlist"`
-	AlertUrlAllowlist        []string `json:"alert_url_allowlist"`
-	AlertUrlParamOwner       string   `json:"alert_url_param_owner,omitempty"`       // Owner of who defines the alert/schedule params on the base url
-	AlertUrlLabel            string   `json:"alert_url_label,omitempty"`             // Label for the alert/schedule url
-	SsoAuthEnabled           *bool    `json:"sso_auth_enabled,omitempty"`            // Is SSO embedding enabled for this Looker
-	EmbedCookielessV2        *bool    `json:"embed_cookieless_v2,omitempty"`         // Is Cookieless embedding enabled for this Looker
-	EmbedContentNavigation   *bool    `json:"embed_content_navigation,omitempty"`    // Is embed content navigation enabled for this looker
-	EmbedContentManagement   *bool    `json:"embed_content_management,omitempty"`    // Is embed content management enabled for this Looker
-	StrictSameoriginForLogin *bool    `json:"strict_sameorigin_for_login,omitempty"` // When true, prohibits the use of Looker login pages in non-Looker iframes. When false, Looker login pages may be used in non-Looker hosted iframes
-	LookFilters              *bool    `json:"look_filters,omitempty"`                // When true, filters are enabled on embedded Looks
-	HideLookNavigation       *bool    `json:"hide_look_navigation,omitempty"`        // When true, removes navigation to Looks from embedded dashboards and explores
-	EmbedEnabled             *bool    `json:"embed_enabled,omitempty"`               // True if embedding is licensed for this Looker instance (read-only)
+	DomainAllowlist          *[]string `json:"domain_allowlist,omitempty"`
+	AlertUrlAllowlist        *[]string `json:"alert_url_allowlist,omitempty"`         // List of allowed alert/schedule urls
+	AlertUrlParamOwner       *string   `json:"alert_url_param_owner,omitempty"`       // Owner of who defines the alert/schedule params on the base url
+	AlertUrlLabel            *string   `json:"alert_url_label,omitempty"`             // Label for the alert/schedule url
+	SsoAuthEnabled           *bool     `json:"sso_auth_enabled,omitempty"`            // Is SSO embedding enabled for this Looker
+	EmbedCookielessV2        *bool     `json:"embed_cookieless_v2,omitempty"`         // Is Cookieless embedding enabled for this Looker
+	EmbedContentNavigation   *bool     `json:"embed_content_navigation,omitempty"`    // Is embed content navigation enabled for this looker
+	EmbedContentManagement   *bool     `json:"embed_content_management,omitempty"`    // Is embed content management enabled for this Looker
+	StrictSameoriginForLogin *bool     `json:"strict_sameorigin_for_login,omitempty"` // When true, prohibits the use of Looker login pages in non-Looker iframes. When false, Looker login pages may be used in non-Looker hosted iframes
+	LookFilters              *bool     `json:"look_filters,omitempty"`                // When true, filters are enabled on embedded Looks
+	HideLookNavigation       *bool     `json:"hide_look_navigation,omitempty"`        // When true, removes navigation to Looks from embedded dashboards and explores
+	EmbedEnabled             *bool     `json:"embed_enabled,omitempty"`               // True if embedding is licensed for this Looker instance (read-only)
 }
 
 func (s *SettingResourceOp) Get(ctx context.Context) (*Setting, *Response, error) {

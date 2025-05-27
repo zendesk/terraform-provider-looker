@@ -14,31 +14,29 @@ description: |-
 ### Optional
 
 - `allow_user_timezones` (Boolean) Toggle user-specific timezones on or off
-- `custom_welcome_email` (Block Set) Custom welcome email configuration (see [below for nested schema](#nestedblock--custom_welcome_email))
+- `custom_welcome_email` (Block List, Max: 1) Custom welcome email configuration (see [below for nested schema](#nestedblock--custom_welcome_email))
 - `dashboard_auto_refresh_minimum_interval` (String) Minimum time interval for dashboard element automatic refresh. Examples: (30 seconds, 1 minute)
 - `dashboard_autorefresh_restriction` (Boolean) Toggle dashboard auto refresh restriction
 - `data_connector_default_enabled` (Boolean) Toggle default future connectors on or off
 - `email_domain_allowlist` (List of String) List of email domains that are allowed to be used for user creation
-- `embed_config` (Block Set) Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (see [below for nested schema](#nestedblock--embed_config))
-- `embed_cookieless_v2` (Boolean, Deprecated)
+- `embed_config` (Block List, Max: 1) Embed configuration. Requires embedding to be enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed (see [below for nested schema](#nestedblock--embed_config))
 - `extension_framework_enabled` (Boolean) Toggle extension framework on or off
 - `extension_load_url_enabled` (Boolean, Deprecated)
 - `host_url` (String) Change the base portion of your Looker instance URL setting
 - `managed_certificate_uri` (List of String)
 - `marketplace_auto_install_enabled` (Boolean, Deprecated)
-- `marketplace_automation` (Block Set) Marketplace automation settings (see [below for nested schema](#nestedblock--marketplace_automation))
+- `marketplace_automation` (Block List, Max: 1) Marketplace automation settings (see [below for nested schema](#nestedblock--marketplace_automation))
 - `marketplace_enabled` (Boolean) Toggle marketplace on or off
 - `marketplace_terms_accepted` (Boolean) Accept marketplace terms by setting this value to true, or get the current status. Marketplace terms CANNOT be declined once accepted. Accepting marketplace terms automatically enables the marketplace. The marketplace can still be disabled after it has been enabled
 - `onboarding_enabled` (Boolean) Toggle onboarding on or off
 - `override_warnings` (Boolean) (Write-Only) If warnings are preventing a host URL change, this parameter allows for overriding warnings to force update the setting. Does not directly change any Looker settings
-- `privatelabel_configuration` (Block Set) Private label configuration (see [below for nested schema](#nestedblock--privatelabel_configuration))
+- `privatelabel_configuration` (Block List, Max: 1) Private label configuration (see [below for nested schema](#nestedblock--privatelabel_configuration))
 - `timezone` (String) Change instance-wide default timezone
 
 ### Read-Only
 
-- `embed_enabled` (Boolean) True if embedding is enabled https://cloud.google.com/looker/docs/r/looker-core-feature-embed, false otherwise
 - `id` (String) The ID of this resource.
-- `instance_config` (Set of Object) Externally available instance configuration information (see [below for nested schema](#nestedatt--instance_config))
+- `instance_config` (List of Object) Externally available instance configuration information (see [below for nested schema](#nestedatt--instance_config))
 - `login_notification_enabled` (Boolean) Toggle login notification on or off
 - `login_notification_text` (String) Text to display in the login notification banner
 - `marketplace_site` (String) Location of Looker marketplace CDN
@@ -116,5 +114,5 @@ Read-Only:
 
 Read-Only:
 
-- `feature_flags` (Map of String)
-- `license_features` (Map of String)
+- `feature_flags` (Map of Boolean)
+- `license_features` (Map of Boolean)
