@@ -12,7 +12,7 @@ func resourceApiCredentials() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceApiCredentialsCreate,
 		ReadContext:   resourceApiCredentialsRead,
-		UpdateContext: resourceApiCredentialsCreate,
+		UpdateContext: resourceApiCredentialsUpdate,
 		DeleteContext: resourceApiCredentialsDelete,
 		Schema: map[string]*schema.Schema{
 			"user_id": {
@@ -40,6 +40,7 @@ func resourceApiCredentials() *schema.Resource {
 			},
 			"is_disabled": {
 				Type:        schema.TypeBool,
+				Computed:    true,
 				Optional:    true,
 				Default:     false,
 				Description: "Whether the credential is disabled",
@@ -107,6 +108,10 @@ func resourceApiCredentialsRead(ctx context.Context, d *schema.ResourceData, m a
 	d.Set("user_id", userID)
 
 	return nil
+}
+
+func resourceApiCredentialsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+    return diag.Errorf("API credentials resource cannot be updated; please delete and recreate the resource to make changes")
 }
 
 func resourceApiCredentialsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
