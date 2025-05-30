@@ -111,20 +111,20 @@ func resourceApiCredentialsRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceApiCredentialsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-    return diag.Errorf("API credentials resource cannot be updated; please delete and recreate the resource to make changes")
+	return diag.Errorf("API credentials resource cannot be updated; please delete and recreate the resource to make changes")
 }
 
 func resourceApiCredentialsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-    c := m.(*Config).Api
+	c := m.(*Config).Api
 
-    userID := d.Get("user_id").(int)
-    credID := d.Id()
+	userID := d.Get("user_id").(int)
+	credID := d.Id()
 
-    _, err := c.ApiCredentials.Delete(ctx, userID, credID)
-    if err != nil {
-        return diag.FromErr(fmt.Errorf("deleting API credential: %w", err))
-    }
+	_, err := c.ApiCredentials.Delete(ctx, userID, credID)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("deleting API credential: %w", err))
+	}
 
-    d.SetId("")
-    return nil
+	d.SetId("")
+	return nil
 }

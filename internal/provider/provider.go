@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"golang.org/x/oauth2"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -89,7 +89,7 @@ func New(version string) func() *schema.Provider {
 				"looker_user_attribute_member":  resourceUserAttributeMember(),
 				"looker_theme":                  resourceTheme(),
 				"looker_setting":                resourceSetting(),
-				"looker_api_credentials":         resourceApiCredentials(),
+				"looker_api_credentials":        resourceApiCredentials(),
 			},
 		}
 
