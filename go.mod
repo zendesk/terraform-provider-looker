@@ -1,4 +1,4 @@
-module github.com/devoteamgcloud/terraform-provider-looker
+module github.com/zendesk/terraform-provider-looker
 
 go 1.18
 

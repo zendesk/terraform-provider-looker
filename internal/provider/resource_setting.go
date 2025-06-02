@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"

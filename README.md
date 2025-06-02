@@ -1,6 +1,6 @@
 ![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fdevoteamgcloud%2Fterraform-provider-looker&label=Visitors&countColor=%23d9e3f0&style=flat)
-[![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/issues)
-[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest)
+[![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/zendesk/terraform-provider-looker/issues)
+[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/zendesk/terraform-provider-looker/releases/latest)
 
 # Terraform provider for Looker
 
@@ -10,7 +10,7 @@ Provider available at [Terraform registry](https://registry.terraform.io/provide
 
 ## License
 
-This repository is open source, please refer to the [License](https://github.com/devoteamgcloud/terraform-provider-looker/blob/main/LICENSE) for more information.
+This repository is open source, please refer to the [License](https://github.com/zendesk/terraform-provider-looker/blob/main/LICENSE) for more information.
 
 ## Getting Started & Documentation
 
@@ -37,9 +37,9 @@ provider "looker" {
 
 ## Developing the provider
 
-To learn more about how to contribute to the development of this provider please refer to the [community guidelines](https://github.com/devoteamgcloud/terraform-provider-looker/blob/main/CONTRIBUTING.md).
+To learn more about how to contribute to the development of this provider please refer to the [community guidelines](https://github.com/zendesk/terraform-provider-looker/blob/main/CONTRIBUTING.md).
 
-**Did you find a vulnerability?** Please refer to the [Security Policy](https://github.com/devoteamgcloud/terraform-provider-looker/security/policy) for more information.
+**Did you find a vulnerability?** Please refer to the [Security Policy](https://github.com/zendesk/terraform-provider-looker/security/policy) for more information.
 
 ### Makefile
 
@@ -75,13 +75,13 @@ The make command provides an easy way to access commands for local development o
 3. You can use the provider now by setting the source to "hashicorp.local/devoteamgcloud/looker"
 
    ```
-   terraform {  
-      required_providers {  
-         looker = { 
-            source  = "hashicorp.local/devoteamgcloud/looker" 
-            version = "x.x.x" 
-         } 
-      } 
+   terraform {
+      required_providers {
+         looker = {
+            source  = "hashicorp.local/devoteamgcloud/looker"
+            version = "x.x.x"
+         }
+      }
    }
    ```
 

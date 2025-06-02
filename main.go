@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/devoteamgcloud/terraform-provider-looker/internal/provider"
+	"github.com/zendesk/terraform-provider-looker/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )

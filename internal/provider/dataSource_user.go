@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
