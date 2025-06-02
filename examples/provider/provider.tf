@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     looker = {
-      source  = "devoteamgcloud/looker"
+      source  = "zendesk/looker"
       version = "x.x.x"
     }
   }
