@@ -48,6 +48,11 @@ signs:
       - "${signature}"
       - "--detach-sign"
       - "${artifact}"
+
+artifactories:
+  - name: registry
+    target: https://zdrepo.jfrog.io/artifactory/terraform/zendesk/{{ trimprefix .ProjectName "terraform-provider-" }}/{{ .Version }}/
+
 release:
   extra_files:
     - glob: 'terraform-registry-manifest.json'
