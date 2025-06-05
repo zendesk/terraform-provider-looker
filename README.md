@@ -1,7 +1,3 @@
-![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fzendesk%2Fterraform-provider-looker&label=Visitors&countColor=%23d9e3f0&style=flat)
-[![Open issues](https://img.shields.io/github/issues-raw/zendesk/terraform-provider-looker)](https://github.com/zendesk/terraform-provider-looker/issues)
-[![Latest release](https://img.shields.io/github/v/release/zendesk/terraform-provider-looker)](https://github.com/zendesk/terraform-provider-looker/releases/latest)
-
 # Terraform provider for Looker
 
 Terraform provider for [looker](https://www.looker.com/), built without dependencies on official go-sdk.
