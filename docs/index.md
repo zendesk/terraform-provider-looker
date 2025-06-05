@@ -19,7 +19,7 @@ Ensure the user used as owner of the API keys has sufficient admin permissions.
 terraform {
   required_providers {
     looker = {
-      source  = "devoteamgcloud/looker"
+      source  = "zendesk/looker"
       version = "x.x.x"
     }
   }

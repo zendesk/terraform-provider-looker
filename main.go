@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/devoteamgcloud/terraform-provider-looker/internal/provider"
+	"github.com/zendesk/terraform-provider-looker/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
@@ -25,7 +25,7 @@ func main() {
 		Debug: debugMode,
 
 		// TODO: update this string with the full name of your provider as used in your configs
-		ProviderAddr: "registry.terraform.io/providers/devoteamgcloud/looker",
+		ProviderAddr: "zdrepo.jfrog.io/artifactory/terraform/zendesk/looker",
 
 		ProviderFunc: provider.New(version),
 	})

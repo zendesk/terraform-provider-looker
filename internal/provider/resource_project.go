@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/gocolly/colly/v2"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
