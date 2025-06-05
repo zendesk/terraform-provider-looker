@@ -4,7 +4,7 @@ else
 	export VERSION=$(shell cat VERSION)
 endif
 export BASE_BINARY_NAME=terraform-provider-looker
-export ORG=devoteamgcloud
+export ORG=zendesk
 
 .PHONY: build
 build: ## build binary

@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 
-	lookergo "github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	lookergo "github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 )
 
 // export LOOKER_API_CLIENT_ID="dFNmbP4jzXqp" LOOKER_API_CLIENT_SECRET="KFwpLkMf393z" LOOKER_API_ENDPOINT="https://dev.l0c4l.host:9443/api"

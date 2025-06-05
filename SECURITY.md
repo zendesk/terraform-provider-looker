@@ -14,8 +14,6 @@ If you believe you have found a security vulnerability, please report it to us t
 
 **Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-Instead, please send an email to nabil.lahssini@devoteam.com
-
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
 * The type of issue (e.g., buffer overflow, SQL injection, ...)

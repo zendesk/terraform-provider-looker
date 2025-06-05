@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"golang.org/x/oauth2"
@@ -88,6 +88,7 @@ func New(version string) func() *schema.Provider {
 				"looker_user_attribute":         resourceUserAttribute(),
 				"looker_user_attribute_member":  resourceUserAttributeMember(),
 				"looker_theme":                  resourceTheme(),
+				"looker_setting":                resourceSetting(),
 			},
 		}
 
