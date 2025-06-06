@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"fmt"
-	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/zendesk/terraform-provider-looker/pkg/lookergo"
 )
 
 func resourceUserAttribute() *schema.Resource {
