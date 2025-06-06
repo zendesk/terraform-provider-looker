@@ -10,7 +10,7 @@ import (
 
 func resourceApiCredentials() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceApiCredentialsCreate,
+		CreateContext: resourceApiCredentialsCreate
 		ReadContext:   resourceApiCredentialsRead,
 		UpdateContext: resourceApiCredentialsUpdate,
 		DeleteContext: resourceApiCredentialsDelete,
