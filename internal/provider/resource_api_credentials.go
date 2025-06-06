@@ -105,7 +105,6 @@ func resourceApiCredentialsRead(ctx context.Context, d *schema.ResourceData, m a
 	d.Set("url", cred.URL)
 	d.Set("is_disabled", cred.IsDisabled)
 	d.Set("type", cred.Type)
-	d.Set("user_id", userID)
 
 	return nil
 }
